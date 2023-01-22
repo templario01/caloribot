@@ -30,7 +30,6 @@ export class TelefrafService implements OnModuleInit {
     let foodResponse = '';
 
     infoResponse.forEach((food) => {
-      foodResponse += `Name: ${food.name}\n`;
       foodResponse += `- calories: ${food.calories}\n`;
       foodResponse += `- carbohydrates: ${food.carbohydrates_total_g}g\n`;
       foodResponse += `- cholesterol: ${food.cholesterol_mg}mg\n`;

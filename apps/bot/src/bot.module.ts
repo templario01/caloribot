@@ -16,8 +16,9 @@ import { TelefrafService } from './application/telegraf/telegraf.service';
         BOT_TOKEN: Joi.string().required(),
         NINJA_API_KEY: Joi.string().required(),
         NINJA_NUTRITION_API_V1: Joi.string().required(),
+        PORT: Joi.number(),
       }),
-      envFilePath: './apps/bot/.env',
+      envFilePath: '.env',
     }),
   ],
 
