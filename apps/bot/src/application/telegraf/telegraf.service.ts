@@ -1,8 +1,9 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Telegraf, Context } from 'telegraf';
 import { NutritionApiService } from '../nutrition-api/nutrition-api.service';
 import { TelegrafMessage } from './dtos/telegraf-message.response';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class TelefrafService implements OnModuleInit {
@@ -10,6 +11,7 @@ export class TelefrafService implements OnModuleInit {
   constructor(
     readonly configService: ConfigService,
     private readonly nutritionService: NutritionApiService,
+    @Inject('CHAT-MS') private chatClient: ClientProxy,
   ) {
     this.telegraf = new Telegraf(configService.get<string>('BOT_TOKEN'));
     this.telegraf.command('start', this.startCommand.bind(this));

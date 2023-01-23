@@ -9,7 +9,9 @@ import { TelefrafService } from './application/telegraf/telegraf.service';
 @Module({
   imports: [
     HttpModule,
-    RmqModule,
+    RmqModule.register({
+      name: 'CHAT-MS',
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -17,6 +19,7 @@ import { TelefrafService } from './application/telegraf/telegraf.service';
         NINJA_API_KEY: Joi.string().required(),
         NINJA_NUTRITION_API_V1: Joi.string().required(),
         PORT: Joi.number(),
+        RABBIT_MQ_BOT_QUEUE: Joi.string().required(),
       }),
       envFilePath: '.env',
     }),
