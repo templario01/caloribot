@@ -16,4 +16,14 @@ export class FoodService {
   async findAll(): Promise<Food[]> {
     return this.foodModel.find().exec();
   }
+
+  async findResources(searchString: string): Promise<Food[]> {
+    const result = await this.foodModel
+      .find({
+        $or: [{ message: { $regex: searchString, $options: 'i' } }],
+      })
+      .exec();
+
+    return result;
+  }
 }

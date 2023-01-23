@@ -1,4 +1,4 @@
-export class CreateFoodDto {
+class FoodInfo {
   readonly name: string;
   readonly calories: number;
   readonly serving_size_g: number;
@@ -11,4 +11,8 @@ export class CreateFoodDto {
   readonly carbohydrates_total_g: number;
   readonly fiber_g: number;
   readonly sugar_g: number;
+}
+export class CreateFoodDto {
+  message: string;
+  foodInfo?: FoodInfo[];
 }

@@ -8,7 +8,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const rmqService = app.get<RmqService>(RmqService);
 
-  app.connectMicroservice(rmqService.getOptions('BOT'));
+  app.connectMicroservice(rmqService.getOptions('BOT-MS'));
   await app.startAllMicroservices();
   await app.listen(configService.get('PORT'));
 }

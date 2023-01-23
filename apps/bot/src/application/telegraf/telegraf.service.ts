@@ -1,16 +1,20 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Telegraf, Context } from 'telegraf';
 import { NutritionApiService } from '../nutrition-api/nutrition-api.service';
 import { TelegrafMessage } from './dtos/telegraf-message.response';
 import { ClientProxy } from '@nestjs/microservices';
+import { FoodService } from '../food/food.service';
+import { NutritionResponse } from '../nutrition-api/dtos/nutrition.response';
 
 @Injectable()
 export class TelefrafService implements OnModuleInit {
   private readonly telegraf: Telegraf;
+  private readonly logger: Logger;
   constructor(
     readonly configService: ConfigService,
     private readonly nutritionService: NutritionApiService,
+    private readonly foodService: FoodService,
     @Inject('CHAT-MS') private chatClient: ClientProxy,
   ) {
     this.telegraf = new Telegraf(configService.get<string>('BOT_TOKEN'));
@@ -20,6 +24,7 @@ export class TelefrafService implements OnModuleInit {
       this.handleFoodInfo.bind(this),
     );
     this.telegraf.on('message', this.handleOtherMessages.bind(this));
+    this.logger = new Logger(TelefrafService.name);
   }
 
   onModuleInit() {
@@ -27,9 +32,23 @@ export class TelefrafService implements OnModuleInit {
   }
 
   private async handleFoodInfo(ctx: Context) {
-    const { text } = <TelegrafMessage>ctx.message;
-    const infoResponse = await this.nutritionService.getCalories(text);
+    let infoResponse: NutritionResponse[];
     let foodResponse = '';
+    const { text } = <TelegrafMessage>ctx.message;
+    const [food] = await this.foodService.findResources(text);
+    if (food) {
+      infoResponse = food.foodInfo;
+    } else {
+      infoResponse = await this.nutritionService.getCalories(text);
+      const newFood = await this.foodService.create({
+        message: text,
+        foodInfo: infoResponse,
+      });
+
+      this.logger.verbose(
+        `Food added for futures searches: ${newFood.message}`,
+      );
+    }
 
     infoResponse.forEach((food) => {
       foodResponse += `- calories: ${food.calories}\n`;

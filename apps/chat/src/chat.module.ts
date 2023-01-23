@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Food, FoodSchema } from './application/food/schema/food.schema';
 import { RmqModule } from '../../../libs/shared';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import { FoodController } from './api/food.controller';
 @Module({
   imports: [
-    RmqModule,
+    RmqModule.register({
+      name: 'BOT-MS',
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -15,8 +16,8 @@ import * as Joi from 'joi';
       }),
       envFilePath: '.env',
     }),
-    MongooseModule.forRoot('mongodb://victor:root@localhost:27017'),
-    MongooseModule.forFeature([{ name: Food.name, schema: FoodSchema }]),
   ],
+  controllers: [FoodController],
+  providers: [],
 })
 export class ChatModule {}

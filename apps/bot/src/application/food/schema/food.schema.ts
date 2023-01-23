@@ -1,7 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Schema as MongoSchema } from 'mongoose';
 
 export type FoodDocument = HydratedDocument<Food>;
+
+const foodInfoSchema = new MongoSchema({
+  name: String,
+  calories: Number,
+  serving_size_g: Number,
+  fat_total_g: Number,
+  fat_saturated_g: Number,
+  protein_g: Number,
+  sodium_mg: Number,
+  potassium_mg: Number,
+  cholesterol_mg: Number,
+  carbohydrates_total_g: Number,
+  fiber_g: Number,
+  sugar_g: Number,
+});
 
 class FoodInfo {
   @Prop()
@@ -43,10 +58,10 @@ class FoodInfo {
 @Schema()
 export class Food {
   @Prop()
-  description: string;
+  message: string;
 
-  @Prop({ type: FoodInfo })
-  foodInfo: FoodInfo;
+  @Prop({ type: [foodInfoSchema] })
+  foodInfo: FoodInfo[];
 }
 
 export const FoodSchema = SchemaFactory.createForClass(Food);
