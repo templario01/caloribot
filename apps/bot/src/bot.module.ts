@@ -8,6 +8,7 @@ import { TelefrafService } from './application/telegraf/telegraf.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Food, FoodSchema } from './application/food/schema/food.schema';
 import { FoodService } from './application/food/food.service';
+import { BotController } from './api/bot.controller';
 
 @Module({
   imports: [
@@ -39,6 +40,6 @@ import { FoodService } from './application/food/food.service';
 
   providers: [TelefrafService, NutritionApiService, FoodService],
   exports: [],
-  controllers: [],
+  controllers: [BotController],
 })
 export class BotModule {}
